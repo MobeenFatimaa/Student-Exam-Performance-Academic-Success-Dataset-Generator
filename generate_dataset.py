@@ -83,31 +83,34 @@ exam_anxiety_level = np.clip(stress_level + np.random.normal(0, 1.5, N), 1, 10)
 time_management_score = np.clip(np.random.normal(65, 15, N) + (sleep_hours * 2), 10, 100)
 
 # -----------------------------------------------------------------------------
-# 4. TARGET GENERATION (Perfectly Calibrated Physics Engine)
+# 4. TARGET GENERATION (Standardized Normalization Engine)
 # -----------------------------------------------------------------------------
 diff_penalty = {"Easy": 5, "Medium": 0, "Hard": -5}
 exam_diff_numeric = np.array([diff_penalty[d] for d in exam_difficulty])
 
-# Controlled interaction term
+# Interaction term
 anxiety_prep_interaction = -1 * (exam_anxiety_level / (exam_preparation_days + 1)) * 3
 
-# Fine-tuned score formula to align with standard grade thresholds
-raw_score = (
-    12.0 +  # Intercept set to balance spread
-    0.42 * previous_exam_score +
-    0.22 * attendance_percentage +
-    2.20 * (study_hours_per_day ** 0.85) +
-    0.85 * practice_tests_completed +
+# Compute raw linear combination
+raw_score_base = (
+    0.45 * previous_exam_score +
+    0.20 * attendance_percentage +
+    2.50 * (study_hours_per_day ** 0.85) +
+    0.90 * practice_tests_completed +
     0.06 * time_management_score +
     1.10 * (sleep_hours - 7) +
     -1.10 * stress_level +
     exam_diff_numeric +
     anxiety_prep_interaction +
-    np.random.normal(0, 6.0, N)  # Noise variance
+    np.random.normal(0, 6.0, N)
 )
 
-# Rescale and clip exam scores between 0 and 100
-exam_score = np.clip(np.round(raw_score, 2), 0, 100)
+# Standardize to Mean = 68.0, Std Dev = 14.0 (Ideal academic distribution)
+raw_score_standardized = (raw_score_base - np.mean(raw_score_base)) / np.std(raw_score_base)
+calibrated_score = (raw_score_standardized * 14.0) + 68.0
+
+# Clip exam scores cleanly between 0 and 100
+exam_score = np.clip(np.round(calibrated_score, 2), 0, 100)
 
 # Derive question performance from score
 questions_attempted = np.random.randint(85, 101, size=N)
