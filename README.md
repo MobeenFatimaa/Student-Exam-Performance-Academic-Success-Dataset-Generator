@@ -32,9 +32,7 @@ The complete generated dataset is available on Kaggle:
 **Kaggle Dataset:**
 https://www.kaggle.com/datasets/mobeenfatimah/student-exam-performance-and-success-dataset
 
-Example:
 
-`https://www.kaggle.com/datasets/mobeenfatimah/student-exam-performance-academic-success`
 
 ---
 
@@ -45,8 +43,9 @@ Example:
 ├── generate_dataset.py    # Generates raw synthetic data and exports student_exam_performance.csv
 ├── validate_dataset.py    # Loads exported dataset and prints validation diagnostics
 ├── requirements.txt       # Project dependencies
-├── .gitignore             # Git ignore rule file
+├── run.sh                 # script running guidence file
 └── README.md              # Project documentation
+└── LICENCE                # Licence file
 ```
 
 ---
@@ -298,7 +297,7 @@ https://github.com/MobeenFatimaa
 https://github.com/MobeenFatimaa/Student-Exam-Performance-Academic-Success-Dataset-Generator
 
 **Kaggle Dataset:**
-Replace the placeholder above with your actual published Kaggle dataset URL.
+https://www.kaggle.com/datasets/mobeenfatimah/student-exam-performance-and-success-dataset
 
 ---
 
