@@ -83,27 +83,27 @@ exam_anxiety_level = np.clip(stress_level + np.random.normal(0, 1.5, N), 1, 10)
 time_management_score = np.clip(np.random.normal(65, 15, N) + (sleep_hours * 2), 10, 100)
 
 # -----------------------------------------------------------------------------
-# 4. TARGET GENERATION (Calibrated Physics Engine)
+# 4. TARGET GENERATION (Perfectly Calibrated Physics Engine)
 # -----------------------------------------------------------------------------
-diff_penalty = {"Easy": 6, "Medium": 0, "Hard": -6}
+diff_penalty = {"Easy": 5, "Medium": 0, "Hard": -5}
 exam_diff_numeric = np.array([diff_penalty[d] for d in exam_difficulty])
 
 # Controlled interaction term
 anxiety_prep_interaction = -1 * (exam_anxiety_level / (exam_preparation_days + 1)) * 3
 
-# Calibrated score calculation with a +22.0 baseline intercept adjustment
+# Fine-tuned score formula to align with standard grade thresholds
 raw_score = (
-    22.0 +  # Intercept bump to push mean score into realistic range (~68)
-    0.35 * previous_exam_score +
-    0.20 * attendance_percentage +
-    1.80 * (study_hours_per_day ** 0.85) +
-    0.75 * practice_tests_completed +
-    0.05 * time_management_score +
-    1.00 * (sleep_hours - 7) +
-    -1.00 * stress_level +
+    12.0 +  # Intercept set to balance spread
+    0.42 * previous_exam_score +
+    0.22 * attendance_percentage +
+    2.20 * (study_hours_per_day ** 0.85) +
+    0.85 * practice_tests_completed +
+    0.06 * time_management_score +
+    1.10 * (sleep_hours - 7) +
+    -1.10 * stress_level +
     exam_diff_numeric +
     anxiety_prep_interaction +
-    np.random.normal(0, 5.5, N)  # Noise variance
+    np.random.normal(0, 6.0, N)  # Noise variance
 )
 
 # Rescale and clip exam scores between 0 and 100
