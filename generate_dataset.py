@@ -83,26 +83,27 @@ exam_anxiety_level = np.clip(stress_level + np.random.normal(0, 1.5, N), 1, 10)
 time_management_score = np.clip(np.random.normal(65, 15, N) + (sleep_hours * 2), 10, 100)
 
 # -----------------------------------------------------------------------------
-# 4. TARGET GENERATION (Semi-Synthetic Physics Engine)
+# 4. TARGET GENERATION (Calibrated Physics Engine)
 # -----------------------------------------------------------------------------
-diff_penalty = {"Easy": 5, "Medium": 0, "Hard": -7}
+diff_penalty = {"Easy": 6, "Medium": 0, "Hard": -6}
 exam_diff_numeric = np.array([diff_penalty[d] for d in exam_difficulty])
 
-# Interaction: High anxiety damages performance more if preparation is low
-anxiety_prep_interaction = -1 * (exam_anxiety_level / (exam_preparation_days + 1)) * 5
+# Controlled interaction term
+anxiety_prep_interaction = -1 * (exam_anxiety_level / (exam_preparation_days + 1)) * 3
 
-# Synthetic non-linear score equation
+# Calibrated score calculation with a +22.0 baseline intercept adjustment
 raw_score = (
+    22.0 +  # Intercept bump to push mean score into realistic range (~68)
     0.35 * previous_exam_score +
-    0.25 * (attendance_percentage) +
-    2.10 * (study_hours_per_day ** 0.85) +
-    0.80 * practice_tests_completed +
+    0.20 * attendance_percentage +
+    1.80 * (study_hours_per_day ** 0.85) +
+    0.75 * practice_tests_completed +
     0.05 * time_management_score +
-    1.20 * (sleep_hours - 7) +
-    -1.10 * stress_level +
+    1.00 * (sleep_hours - 7) +
+    -1.00 * stress_level +
     exam_diff_numeric +
     anxiety_prep_interaction +
-    np.random.normal(0, 6.5, N)  # Unobserved variance
+    np.random.normal(0, 5.5, N)  # Noise variance
 )
 
 # Rescale and clip exam scores between 0 and 100
@@ -111,12 +112,12 @@ exam_score = np.clip(np.round(raw_score, 2), 0, 100)
 # Derive question performance from score
 questions_attempted = np.random.randint(85, 101, size=N)
 questions_correct = np.clip(
-    np.round((exam_score / 100) * questions_attempted + np.random.normal(0, 2, N)),
+    np.round((exam_score / 100) * questions_attempted + np.random.normal(0, 1.5, N)),
     0,
     questions_attempted
 ).astype(int)
 
-# Multi-Target Derivations
+# Target Derivations
 pass_status = np.where(exam_score >= 50, "Pass", "Fail")
 
 def get_grade(s):
