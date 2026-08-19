@@ -105,9 +105,9 @@ raw_score_base = (
     np.random.normal(0, 6.0, N)
 )
 
-# Standardize to Mean = 68.0, Std Dev = 14.0 (Ideal academic distribution)
+# Standardize to Mean = 62.0, Std Dev = 16.0
 raw_score_standardized = (raw_score_base - np.mean(raw_score_base)) / np.std(raw_score_base)
-calibrated_score = (raw_score_standardized * 14.0) + 68.0
+calibrated_score = (raw_score_standardized * 16.0) + 62.0
 
 # Clip exam scores cleanly between 0 and 100
 exam_score = np.clip(np.round(calibrated_score, 2), 0, 100)
